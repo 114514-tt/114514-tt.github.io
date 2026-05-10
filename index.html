@@ -17,6 +17,8 @@
             justify-content: center;
             font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
             overflow-x: hidden;
+            margin: 0;
+            padding: 20px;
         }
 
         .chinese-font {
@@ -26,52 +28,145 @@
         .card {
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            max-width: 90%;
-            width: 400px;
-            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(255, 182, 193, 0.4);
+            max-width: 450px;
+            width: 100%;
+            padding: 2.5rem 1.5rem;
             text-align: center;
-            border: 2px solid #feb2b2;
+            border: 3px solid #feb2b2;
+            position: relative;
+            z-index: 10;
         }
 
         .heart {
             color: #f56565;
-            font-size: 3rem;
+            font-size: 3.5rem;
             animation: pulse 1.5s infinite;
+            display: inline-block;
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(245, 101, 101, 0.5)); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 15px rgba(245, 101, 101, 0.8)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(245, 101, 101, 0.5)); }
         }
 
         .floating-flower {
-            position: absolute;
+            position: fixed;
             pointer-events: none;
-            z-index: -1;
+            z-index: 1;
             opacity: 0.6;
         }
 
         .btn-grad {
-            background-image: linear-gradient(to right, #f85032 0%, #e73827  51%, #f85032  100%);
+            background-image: linear-gradient(to right, #ff758c 0%, #ff7eb3 51%, #ff758c 100%);
             transition: 0.5s;
             background-size: 200% auto;
             color: white;            
-            box-shadow: 0 0 20px #eee;
-            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
+            border-radius: 50px;
             display: block;
+            border: none;
+            cursor: pointer;
+            outline: none;
         }
 
         .btn-grad:hover {
             background-position: right center;
-            color: #fff;
-            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .music-playing {
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        #surprise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .photo-frame {
+            width: 250px;
+            height: 250px;
+            border: 8px solid white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .typewriter h2 {
+            overflow: hidden;
+            border-right: .15em solid orange;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: 
+                typing 3.5s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: orange; }
         }
     </style>
 </head>
 <body>
+    <!-- 音乐控制 -->
+    <div class="music-btn" onclick="toggleMusic()">
+        <span id="music-icon">🎵</span>
+    </div>
+    <audio id="bg-music" loop>
+        <source src="https://m801.music.126.net/20240510110000/xxx.mp3" type="audio/mpeg">
+        <!-- 注意：这里是一个占位符，微信中通常需要用户点击才能播放 -->
+    </audio>
+
     <div id="flower-container"></div>
 
     <div class="card animate__animated animate__fadeInUp">
@@ -79,88 +174,143 @@
         <h1 class="text-3xl chinese-font text-red-600 mb-6">亲爱的妈妈</h1>
         
         <div class="space-y-4 text-gray-700 leading-relaxed mb-8">
-            <p class="animate__animated animate__fadeIn animate__delay-1s">
-                时光流转，您的爱始终如一。<br>
-                感谢您多年来的默默付出，<br>
-                您的温柔是避风港，您的叮咛是导航灯。
+            <p class="animate__animated animate__fadeIn animate__delay-1s text-lg">
+                在我的生命中，<br>
+                您不仅是遮风挡雨的伞，<br>
+                更是指引我方向的星。
             </p>
-            <p class="animate__animated animate__fadeIn animate__delay-2s font-bold text-red-500 text-xl">
-                祝您母亲节快乐！
+            <p class="animate__animated animate__fadeIn animate__delay-2s font-bold text-pink-500 text-2xl">
+                母亲节快乐！
             </p>
-            <p class="animate__animated animate__fadeIn animate__delay-3s italic">
-                愿您岁岁常欢愉，年年皆胜意。<br>
-                永远年轻美丽！
+            <p class="animate__animated animate__fadeIn animate__delay-3s">
+                愿岁月温柔以待，<br>
+                愿您眼中总有光芒，<br>
+                愿您永远如少女般灿烂。
             </p>
         </div>
 
-        <button onclick="showSurprise()" class="btn-grad px-8 py-3 w-full font-bold">点击查看惊喜</button>
-        
-        <div id="extra-message" class="hidden mt-6 text-pink-600 font-medium animate__animated animate__bounceIn">
-            不管走多远，家永远是我的牵挂，<br>
-            您永远是我最爱的人！妈妈，我爱你！
+        <button onclick="startSurprise()" class="btn-grad px-8 py-4 w-full font-bold text-lg">点击开启超级惊喜 🎁</button>
+    </div>
+
+    <!-- 全屏惊喜层 -->
+    <div id="surprise-overlay">
+        <div class="photo-frame animate__animated animate__zoomIn">
+            <!-- 已替换为用户提供的微信图片 -->
+            <img src="微信图片_20260510113406_26_2.jpg" alt="妈妈的照片">
+            <div class="absolute inset-0 bg-gradient-to-t from-pink-500/30 to-transparent"></div>
         </div>
+        
+        <div class="typewriter mb-6">
+            <h2 class="text-2xl text-pink-600 font-bold chinese-font">您辛苦了，我永远爱您！</h2>
+        </div>
+
+        <div class="max-w-xs text-gray-600 italic mb-8 animate__animated animate__fadeInUp animate__delay-1s">
+            “上帝不能无处不在，所以创造了母亲。”<br>
+            谢谢您，给了我最温暖的世界。
+        </div>
+
+        <button onclick="closeSurprise()" class="text-gray-400 underline text-sm">返回</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         function createFlowers() {
             const container = document.getElementById('flower-container');
-            const icons = ['🌸', '🌹', '🌺', '🌻', '🌷', '✨'];
-            for (let i = 0; i < 20; i++) {
+            const icons = ['🌸', '🌹', '🌺', '🌻', '🌷', '✨', '💖', '🧸'];
+            for (let i = 0; i < 25; i++) {
                 const flower = document.createElement('div');
                 flower.className = 'floating-flower';
                 flower.innerText = icons[Math.floor(Math.random() * icons.length)];
                 flower.style.left = Math.random() * 100 + 'vw';
                 flower.style.top = Math.random() * 100 + 'vh';
                 flower.style.fontSize = (Math.random() * 20 + 20) + 'px';
-                flower.style.animation = `float ${Math.random() * 5 + 5}s infinite linear`;
+                flower.style.animation = `float ${Math.random() * 5 + 7}s infinite linear`;
                 container.appendChild(flower);
             }
         }
 
-        function showSurprise() {
-            const extra = document.getElementById('extra-message');
-            extra.classList.remove('hidden');
+        let isMusicPlaying = false;
+        function toggleMusic() {
+            const music = document.getElementById('bg-music');
+            const btn = document.querySelector('.music-btn');
+            if (isMusicPlaying) {
+                music.pause();
+                btn.classList.remove('music-playing');
+            } else {
+                music.play().catch(e => console.log("微信等浏览器可能需要手动点击播放"));
+                btn.classList.add('music-playing');
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        function startSurprise() {
+            const overlay = document.getElementById('surprise-overlay');
+            overlay.style.display = 'flex';
             
-            // Confetti effect
-            const duration = 3 * 1000;
-            const end = Date.now() + duration;
+            // 自动尝试播放音乐（如果还没播）
+            if (!isMusicPlaying) toggleMusic();
+
+            // 烟花效果
+            const end = Date.now() + (5 * 1000);
+            const colors = ['#ff69b4', '#ff1493', '#ffffff', '#ffb6c1'];
 
             (function frame() {
                 confetti({
-                    particleCount: 3,
+                    particleCount: 5,
                     angle: 60,
                     spread: 55,
                     origin: { x: 0 },
-                    colors: ['#ff0000', '#ff69b4', '#ffffff']
+                    colors: colors
                 });
                 confetti({
-                    particleCount: 3,
+                    particleCount: 5,
                     angle: 120,
                     spread: 55,
                     origin: { x: 1 },
-                    colors: ['#ff0000', '#ff69b4', '#ffffff']
+                    colors: colors
                 });
 
                 if (Date.now() < end) {
                     requestAnimationFrame(frame);
                 }
             }());
+            
+            // 随机中心喷泉
+            setTimeout(() => {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: colors
+                });
+            }, 1000);
         }
 
-        // Add float animation keyframes dynamically
+        function closeSurprise() {
+            document.getElementById('surprise-overlay').style.display = 'none';
+        }
+
+        // 动态添加漂浮动画
         const style = document.createElement('style');
         style.innerHTML = `
             @keyframes float {
-                0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-                10% { opacity: 0.6; }
-                90% { opacity: 0.6; }
-                100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+                0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+                10% { opacity: 0.7; }
+                90% { opacity: 0.7; }
+                100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
             }
         `;
         document.head.appendChild(style);
 
         createFlowers();
+        
+        // 微信环境下自动尝试播放的黑科技（部分生效）
+        document.addEventListener("WeixinJSBridgeReady", function () {
+            const music = document.getElementById('bg-music');
+            music.play();
+            document.querySelector('.music-btn').classList.add('music-playing');
+            isMusicPlaying = true;
+        }, false);
     </script>
 </body>
 </html>
