@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>母亲节快乐</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
+        
+        body {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7e2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .chinese-font {
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 400px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid #feb2b2;
+        }
+
+        .heart {
+            color: #f56565;
+            font-size: 3rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .floating-flower {
+            position: absolute;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .btn-grad {
+            background-image: linear-gradient(to right, #f85032 0%, #e73827  51%, #f85032  100%);
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .btn-grad:hover {
+            background-position: right center;
+            color: #fff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="flower-container"></div>
+
+    <div class="card animate__animated animate__fadeInUp">
+        <div class="heart mb-4">❤️</div>
+        <h1 class="text-3xl chinese-font text-red-600 mb-6">亲爱的妈妈</h1>
+        
+        <div class="space-y-4 text-gray-700 leading-relaxed mb-8">
+            <p class="animate__animated animate__fadeIn animate__delay-1s">
+                时光流转，您的爱始终如一。<br>
+                感谢您多年来的默默付出，<br>
+                您的温柔是避风港，您的叮咛是导航灯。
+            </p>
+            <p class="animate__animated animate__fadeIn animate__delay-2s font-bold text-red-500 text-xl">
+                祝您母亲节快乐！
+            </p>
+            <p class="animate__animated animate__fadeIn animate__delay-3s italic">
+                愿您岁岁常欢愉，年年皆胜意。<br>
+                永远年轻美丽！
+            </p>
+        </div>
+
+        <button onclick="showSurprise()" class="btn-grad px-8 py-3 w-full font-bold">点击查看惊喜</button>
+        
+        <div id="extra-message" class="hidden mt-6 text-pink-600 font-medium animate__animated animate__bounceIn">
+            不管走多远，家永远是我的牵挂，<br>
+            您永远是我最爱的人！妈妈，我爱你！
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        function createFlowers() {
+            const container = document.getElementById('flower-container');
+            const icons = ['🌸', '🌹', '🌺', '🌻', '🌷', '✨'];
+            for (let i = 0; i < 20; i++) {
+                const flower = document.createElement('div');
+                flower.className = 'floating-flower';
+                flower.innerText = icons[Math.floor(Math.random() * icons.length)];
+                flower.style.left = Math.random() * 100 + 'vw';
+                flower.style.top = Math.random() * 100 + 'vh';
+                flower.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                flower.style.animation = `float ${Math.random() * 5 + 5}s infinite linear`;
+                container.appendChild(flower);
+            }
+        }
+
+        function showSurprise() {
+            const extra = document.getElementById('extra-message');
+            extra.classList.remove('hidden');
+            
+            // Confetti effect
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff0000', '#ff69b4', '#ffffff']
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff0000', '#ff69b4', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // Add float animation keyframes dynamically
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes float {
+                0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+                10% { opacity: 0.6; }
+                90% { opacity: 0.6; }
+                100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        createFlowers();
+    </script>
+</body>
+</html>
