@@ -1,3 +1,0 @@
-Temporary GitHub connector push test.
-This file will be deleted after read-back verification.
-Test branch: codex/push-test-20261030-sh1uw3
